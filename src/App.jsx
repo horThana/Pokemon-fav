@@ -1,51 +1,72 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import axios from 'axios'
-
+import { useState, useEffect } from 'react';
+import './App.css';
+import axios from 'axios';
 
 function App() {
-  const [poke, setPoke] = useState( [] );
-  const [loading, setloading] = useState(false); // พอเเรา se fetch ค้อยเปลี่ยนเป็น true
-  const [error, setError] = useState();
+  const [poke, setPoke] = useState({});
+  const [loading, setloading] = useState(false);
+  const [error, setError] = useState('');
+  const [seach, setSearch] = useState('1');
+  const [fav, setFav] = useState([]);
 
- 
   useEffect(() => {
+    let abortController = new AbortController();
 
-      let abortController = new AbortController();
-
-      const loadPokemon = async () => {
-        try{
-
-          setloading(true);
-          const res = axios.get(`https://pokeapi.co/api/v2/pokemon/1`,{
-            signal: abortController.signal
+    const loadPokemon = async () => {
+      try {
+        setloading(true);
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${seach}`, {
+          signal: abortController.signal,
         });
 
-        setPoke(res.data.json());
-        setError();
-
-        }catch(error){
-            console.log('Server Error not working')
-            setError('Server Error')
-        }finally{
-          setloading(false);
-        }
+        setPoke(response.data);
+        setError('');
+      } catch (error) {
+        setError('Server Error not working', error);
+      } finally {
+        setloading(false);
       }
-      loadPokemon();
-          return () => {
-            abortController.abort();
-          };
-  }, []);
+    };
 
-  
-  
+    loadPokemon();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [seach]); /// เพื่อให้มันรีเฟรชเวลาเปลี่ยนค่า
+
+  console.log(poke);
+
+/// สร้างปุ่ที่เปลี่ยนค่าได้
+const prevPokemon = () => {
+  setSearch((search) => search -1);
+};
+
+const nextPokemon = () => {
+  setSearch((search) => Number(search)+1);
+};
+
+  console.log('Pokemon ID:', seach);
+
+  const addfavrorite = () => {
+    setFav((oldState) => [...oldState, poke])
+  }
+  console.log(fav);
+
   return (
     <>
-      
+     <h1>{poke?.name}</h1>
+     <button onClick={addfavrorite}>Add Favorite</button>
+     <img src={poke?.sprites?.other?.home?.front_default} alt={poke?.name}></img>
+     <ul>
+        {poke?.abilities?.map((abilites, indedx) => {
+          return <li key={indedx}>{abilites.ability.name}</li>;
+        })}
+     </ul>
+     <button onClick={prevPokemon}>Prevet</button>
+     <button onClick={nextPokemon}>Next</button>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
