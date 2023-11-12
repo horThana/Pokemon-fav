@@ -59,7 +59,7 @@ const nextPokemon = () => {
   console.log(fav);
 
   return (
-    <div className=''>
+    <div className='border border-indigo-600 '>
      <div className='grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2'>
         <div>
           {loading ? <p>Loading ... </p>
@@ -81,8 +81,8 @@ const nextPokemon = () => {
         </div>
      
      <div>  
-     <h1>Favorite Pokemon</h1>
-      <Favpoke fav={fav}/>
+     <h1>Your Favorite Pokemon</h1>
+      {fav.length > 0 ? <Favpoke fav={fav} /> :<div className='flex h-full justify-center item-center'><p>NOT Favorite Pokemon... </p> </div> } 
       </div>
      </div>
     </div>
