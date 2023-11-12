@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
 
+
+/// components
+import Favpoke from './components/favpoke';
+
+
 function App() {
   const [poke, setPoke] = useState({});
   const [loading, setloading] = useState(false);
@@ -54,18 +59,33 @@ const nextPokemon = () => {
   console.log(fav);
 
   return (
-    <>
-     <h1>{poke?.name}</h1>
-     <button onClick={addfavrorite}>Add Favorite</button>
-     <img src={poke?.sprites?.other?.home?.front_default} alt={poke?.name}></img>
-     <ul>
-        {poke?.abilities?.map((abilites, indedx) => {
-          return <li key={indedx}>{abilites.ability.name}</li>;
-        })}
-     </ul>
-     <button onClick={prevPokemon}>Prevet</button>
-     <button onClick={nextPokemon}>Next</button>
-    </>
+    <div className=''>
+     <div className='grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2'>
+        <div>
+          {loading ? <p>Loading ... </p>
+          :
+          <>
+            <h1>{poke?.name}</h1>
+              <button onClick={addfavrorite}>Add Favorite</button>
+              <img src={poke?.sprites?.other?.home?.front_default} alt={poke?.name}></img>
+              <ul>
+                  {poke?.abilities?.map((abilites, indedx) => {
+                    return <li key={indedx}>{abilites.ability.name}</li>;
+                  })}
+              </ul>
+              <button onClick={prevPokemon}>Prevet</button>
+              <button onClick={nextPokemon}>Next</button>
+          </>
+          }
+          
+        </div>
+     
+     <div>  
+     <h1>Favorite Pokemon</h1>
+      <Favpoke fav={fav}/>
+      </div>
+     </div>
+    </div>
   );
 }
 
